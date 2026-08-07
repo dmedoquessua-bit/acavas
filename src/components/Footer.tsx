@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { BookOpen } from "lucide-react";
+import brandIcon from "@/assets/worscoi-icon.png";
 
 const Footer = () => (
   <footer className="mt-24 border-t border-border bg-secondary/40">
@@ -7,7 +8,7 @@ const Footer = () => (
       <div className="grid gap-10 md:grid-cols-3">
         <div>
           <div className="flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-primary" />
+            <img src={brandIcon} alt="Worscoi" width={28} height={28} className="h-7 w-7 rounded-md" />
             <span className="font-display text-lg">Worscoi</span>
           </div>
           <p className="mt-3 max-w-xs text-sm text-muted-foreground">
