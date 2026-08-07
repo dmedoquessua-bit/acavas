@@ -65,7 +65,7 @@ const Booking = () => {
     setStep(1);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!name || !phone || !email || !postcode) {
       toast.error("Please fill in all contact details");
       return;
@@ -76,10 +76,37 @@ const Booking = () => {
       toast.error("Please enter a valid email address");
       return;
     }
-    
+
+    if (!dateRange?.from || !dateRange?.to) {
+      toast.error("Please select your dates");
+      setDirection(-1);
+      setStep(1);
+      return;
+    }
+
+    setSubmitting(true);
+    const { error } = await supabase.from("bookings").insert({
+      location_id: location,
+      guest_name: name.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      check_in: format(dateRange.from, "yyyy-MM-dd"),
+      check_out: format(dateRange.to, "yyyy-MM-dd"),
+      guests: parseInt(guests, 10) || 1,
+      message: `Postcode: ${postcode.trim()}`,
+    });
+    setSubmitting(false);
+
+    if (error) {
+      toast.error("Something went wrong submitting your request. Please try again.");
+      return;
+    }
+
+    toast.success("Booking request sent!");
     setDirection(1);
     setStep(3);
   };
+
 
   const handleReset = () => {
     setDirection(-1);
