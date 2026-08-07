@@ -89,7 +89,7 @@ const Auth = () => {
         <div className="mb-10 text-center">
           <div className="mb-5 flex items-center justify-center gap-2 text-ink-foreground">
             <BookOpen className="h-5 w-5 text-primary" />
-            <span className="font-display text-lg">Papel &amp; Praça</span>
+            <span className="font-display text-lg">Worscoi</span>
           </div>
           <h1 className="font-display text-2xl text-ink-foreground">
             {isLogin ? "Entrar na sua conta" : "Criar conta"}

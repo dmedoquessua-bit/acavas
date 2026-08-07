@@ -8,7 +8,7 @@ const Footer = () => (
         <div>
           <div className="flex items-center gap-2">
             <BookOpen className="h-5 w-5 text-primary" />
-            <span className="font-display text-lg">Papel &amp; Praça</span>
+            <span className="font-display text-lg">Worscoi</span>
           </div>
           <p className="mt-3 max-w-xs text-sm text-muted-foreground">
             Uma livraria digital e um jornal de ideias. Compre, leia no navegador e acompanhe o que
@@ -31,7 +31,7 @@ const Footer = () => (
         </div>
       </div>
       <p className="mt-12 text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Papel &amp; Praça. Todos os direitos reservados.
+        © {new Date().getFullYear()} Worscoi. Todos os direitos reservados.
       </p>
     </div>
   </footer>

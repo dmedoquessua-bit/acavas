@@ -25,7 +25,7 @@ const Navigation = () => {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
         <Link to="/" className="flex items-center gap-2">
           <BookOpen className="h-5 w-5 text-primary" />
-          <span className="font-display text-lg">Papel &amp; Praça</span>
+          <span className="font-display text-lg">Worscoi</span>
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">
