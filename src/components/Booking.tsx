@@ -52,6 +52,8 @@ const Booking = () => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [postcode, setPostcode] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
 
   const handleStep1Continue = () => {
     if (!dateRange?.from || !dateRange?.to || !location || !guests) {
