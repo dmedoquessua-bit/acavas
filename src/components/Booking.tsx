@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { toast } from "sonner";
 import { CalendarDays, Users, MapPin, ArrowRight, ArrowLeft, CheckCircle, User, Phone, Mail, MapPinned } from "lucide-react";
 import { locations } from "@/data/locations";
+import { supabase } from "@/integrations/supabase/client";
+
 
 const slideVariants = {
   enter: (direction: number) => ({
