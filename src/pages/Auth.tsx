@@ -85,7 +85,7 @@ const Auth = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-6" style={{ background: "var(--gradient-hero)" }}>
+    <div className="flex min-h-screen items-center justify-center px-6 bg-secondary/30">
       <div className="w-full max-w-sm">
         <div className="mb-10 text-center">
           <div className="mb-5 flex items-center justify-center gap-2 text-ink-foreground">
