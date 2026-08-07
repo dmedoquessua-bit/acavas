@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Menu, X, BookOpen, LogOut } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import brandIcon from "@/assets/worscoi-icon.png";
 
 const links = [
   { to: "/livros", label: "Livros" },
@@ -24,8 +25,8 @@ const Navigation = () => {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
         <Link to="/" className="flex items-center gap-2">
-          <BookOpen className="h-5 w-5 text-primary" />
-          <span className="font-display text-lg">Papel &amp; Praça</span>
+          <img src={brandIcon} alt="Worscoi" width={28} height={28} className="h-7 w-7 rounded-md" />
+          <span className="font-display text-lg">Worscoi</span>
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">

@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import brandIcon from "@/assets/worscoi-icon.png";
 
 const schema = z.object({
   email: z.string().trim().email("Informe um e-mail válido").max(255),
@@ -88,8 +89,8 @@ const Auth = () => {
       <div className="w-full max-w-sm">
         <div className="mb-10 text-center">
           <div className="mb-5 flex items-center justify-center gap-2 text-ink-foreground">
-            <BookOpen className="h-5 w-5 text-primary" />
-            <span className="font-display text-lg">Papel &amp; Praça</span>
+            <img src={brandIcon} alt="Worscoi" width={28} height={28} className="h-7 w-7 rounded-md" />
+            <span className="font-display text-lg">Worscoi</span>
           </div>
           <h1 className="font-display text-2xl text-ink-foreground">
             {isLogin ? "Entrar na sua conta" : "Criar conta"}
