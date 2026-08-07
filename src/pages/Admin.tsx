@@ -129,6 +129,17 @@ const Admin = () => {
             </p>
           </motion.div>
 
+          {!isDemo && user && !isAdmin && !bookingsLoading && (
+            <div className="mb-10 rounded-md border border-border bg-accent/30 p-5">
+              <p className="text-sm font-light text-foreground mb-1">Admin access required</p>
+              <p className="text-xs text-muted-foreground font-light">
+                Your account is signed in but doesn't have the admin role yet, so booking data stays hidden.
+              </p>
+            </div>
+          )}
+
+
+
           {/* Stats Cards */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
