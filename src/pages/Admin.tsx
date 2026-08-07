@@ -17,17 +17,25 @@ import {
 } from "@/components/ui/table";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { mockBookings, getBookingStats } from "@/data/bookings";
 import { locations, getLocationById } from "@/data/locations";
 import { useAuth } from "@/hooks/useAuth";
+import { useBookings } from "@/hooks/useBookings";
 
 const Admin = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isDemo = searchParams.get("demo") === "true";
-  const { user, loading, signOut } = useAuth();
+  const { user, loading, isAdmin, signOut } = useAuth();
   const [selectedLocation, setSelectedLocation] = useState("all");
-  const stats = getBookingStats();
+  const { bookings, loading: bookingsLoading } = useBookings(isDemo);
+
+  const today = new Date();
+  const stats = {
+    total: bookings.length,
+    confirmed: bookings.filter((b) => b.status === "confirmed").length,
+    pending: bookings.filter((b) => b.status === "pending").length,
+    upcoming: bookings.filter((b) => b.checkIn >= today && b.status !== "cancelled").length,
+  };
 
   useEffect(() => {
     if (!loading && !user && !isDemo) {
@@ -44,8 +52,9 @@ const Admin = () => {
   }
 
   const filteredBookings = selectedLocation === "all" 
-    ? mockBookings 
-    : mockBookings.filter(b => b.locationId === selectedLocation);
+    ? bookings 
+    : bookings.filter(b => b.locationId === selectedLocation);
+
 
   const getStatusColor = (status: string) => {
     switch (status) {
