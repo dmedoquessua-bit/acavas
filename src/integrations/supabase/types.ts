@@ -14,50 +14,201 @@ export type Database = {
   }
   public: {
     Tables: {
-      bookings: {
+      books: {
         Row: {
-          check_in: string
-          check_out: string
+          author: string
+          category: string
+          cover_url: string | null
           created_at: string
-          email: string
-          guest_name: string
-          guests: number
+          currency: string
+          description: string
+          featured: boolean
           id: string
-          location_id: string
-          message: string | null
-          phone: string | null
-          status: string
+          price_cents: number
+          published: boolean
+          title: string
           updated_at: string
         }
         Insert: {
-          check_in: string
-          check_out: string
+          author: string
+          category?: string
+          cover_url?: string | null
           created_at?: string
-          email: string
-          guest_name: string
-          guests?: number
+          currency?: string
+          description?: string
+          featured?: boolean
           id?: string
-          location_id: string
-          message?: string | null
-          phone?: string | null
-          status?: string
+          price_cents?: number
+          published?: boolean
+          title: string
           updated_at?: string
         }
         Update: {
-          check_in?: string
-          check_out?: string
+          author?: string
+          category?: string
+          cover_url?: string | null
           created_at?: string
-          email?: string
-          guest_name?: string
-          guests?: number
+          currency?: string
+          description?: string
+          featured?: boolean
           id?: string
-          location_id?: string
-          message?: string | null
-          phone?: string | null
-          status?: string
+          price_cents?: number
+          published?: boolean
+          title?: string
           updated_at?: string
         }
         Relationships: []
+      }
+      chapters: {
+        Row: {
+          book_id: string
+          content: string
+          created_at: string
+          id: string
+          is_free_preview: boolean
+          position: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          book_id: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_free_preview?: boolean
+          position?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          book_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_free_preview?: boolean
+          position?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chapters_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      news: {
+        Row: {
+          category: string
+          content: string
+          cover_url: string | null
+          created_at: string
+          excerpt: string
+          id: string
+          published: boolean
+          published_at: string
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          content?: string
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string
+          id?: string
+          published?: boolean
+          published_at?: string
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          content?: string
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string
+          id?: string
+          published?: boolean
+          published_at?: string
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      purchases: {
+        Row: {
+          amount_cents: number
+          book_id: string
+          created_at: string
+          currency: string
+          id: string
+          provider_reference: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents?: number
+          book_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          provider_reference?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          book_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          provider_reference?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchases_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -90,6 +241,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      owns_book: {
+        Args: { _book_id: string; _user_id: string }
         Returns: boolean
       }
     }
