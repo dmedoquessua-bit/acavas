@@ -1,96 +1,154 @@
-import { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Menu, X, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Button } from "./ui/button";
 import brandIcon from "@/assets/worscoi-icon.png";
+import { useAuth } from "@/hooks/useAuth";
 
-const links = [
-  { to: "/livros", label: "Livros" },
-  { to: "/noticias", label: "Notícias" },
-  { to: "/biblioteca", label: "Minha biblioteca" },
-];
+interface NavigationProps {
+  variant?: "default" | "dark";
+}
 
-const Navigation = () => {
-  const [open, setOpen] = useState(false);
-  const { user, isAdmin, signOut } = useAuth();
+const Navigation = ({ variant = "default" }: NavigationProps) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isDark = variant === "dark";
+  const { user, isAdmin } = useAuth();
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const location = useLocation();
   const navigate = useNavigate();
+  const isHomePage = location.pathname === "/";
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/");
+  const handleReserve = () => {
+    if (isHomePage) {
+      document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
   };
 
+  const navItems = [
+    { label: "Livros", href: "/livros" },
+    { label: "Notícias", href: "/noticias" },
+    { label: user ? "Minha estante" : "Entrar", href: user ? "/biblioteca" : "/auth" },
+    ...(isAdmin ? [{ label: "Admin", href: "/admin" }] : []),
+  ];
+
+  const lightText = isMobileMenuOpen || isDark || !isScrolled;
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-        <Link to="/" className="flex items-center gap-2">
-          <img src={brandIcon} alt="Worscoi" width={28} height={28} className="h-7 w-7 rounded-md" />
-          <span className="font-display text-lg">Worscoi</span>
-        </Link>
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6 }}
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-400 ${
+        isMobileMenuOpen
+          ? "bg-foreground"
+          : isDark
+            ? isScrolled
+              ? "bg-foreground/95 backdrop-blur-lg shadow-soft"
+              : "bg-foreground"
+            : isScrolled
+              ? "bg-card/95 backdrop-blur-lg shadow-soft"
+              : "bg-transparent"
+      }`}
+    >
+      <div className="container mx-auto px-6 lg:px-12 py-5">
+        <div className="flex items-center justify-between">
+          <Link to="/">
+            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center gap-2 cursor-pointer">
+              <img src={brandIcon} alt="Worscoi" width={20} height={20} className="h-5 w-5 rounded-[4px]" />
+              <span className={`text-sm font-normal tracking-wide ${lightText ? "text-white" : "text-foreground"}`}>
+                Worscoi
+              </span>
+            </motion.div>
+          </Link>
 
-        <nav className="hidden items-center gap-7 md:flex">
-          {links.map((l) => (
-            <NavLink
-              key={l.to}
-              to={l.to}
-              className={({ isActive }) =>
-                `text-sm transition-colors ${isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"}`
-              }
-            >
-              {l.label}
-            </NavLink>
-          ))}
-          {isAdmin && (
-            <NavLink to="/admin" className="text-sm text-muted-foreground hover:text-foreground">
-              Painel
-            </NavLink>
-          )}
-        </nav>
-
-        <div className="hidden items-center gap-2 md:flex">
-          {user ? (
-            <Button variant="ghost" size="sm" onClick={handleSignOut}>
-              <LogOut className="mr-1.5 h-4 w-4" /> Sair
-            </Button>
-          ) : (
-            <Button size="sm" onClick={() => navigate("/auth")}>
-              Entrar
-            </Button>
-          )}
-        </div>
-
-        <button className="md:hidden" onClick={() => setOpen(!open)} aria-label="Menu">
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-      </div>
-
-      {open && (
-        <div className="border-t border-border bg-background px-5 py-4 md:hidden">
-          <div className="flex flex-col gap-3">
-            {links.map((l) => (
-              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="text-sm">
-                {l.label}
+          <div className="hidden md:flex items-center gap-10">
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                to={item.href}
+                className={`text-[11px] uppercase tracking-wider font-normal smooth-hover hover:opacity-60 ${
+                  isDark || !isScrolled ? "text-white" : "text-foreground"
+                }`}
+              >
+                {item.label}
               </Link>
             ))}
-            {isAdmin && (
-              <Link to="/admin" onClick={() => setOpen(false)} className="text-sm">
-                Painel
-              </Link>
-            )}
-            {user ? (
-              <button className="text-left text-sm text-muted-foreground" onClick={handleSignOut}>
-                Sair
-              </button>
-            ) : (
-              <Link to="/auth" onClick={() => setOpen(false)} className="text-sm text-primary">
-                Entrar
-              </Link>
-            )}
+            <Button
+              variant="outline"
+              size="sm"
+              className={`rounded-full smooth-hover text-[11px] uppercase tracking-wider font-normal backdrop-blur-md border border-white/30 shadow-[0_4px_30px_rgba(0,0,0,0.1)] px-5 ${
+                isDark || !isScrolled
+                  ? "bg-white/10 text-white hover:bg-primary/80 hover:text-white hover:border-primary/80"
+                  : "bg-white/20 text-foreground hover:bg-primary/80 hover:text-white hover:border-primary/80"
+              }`}
+              onClick={handleReserve}
+            >
+              Reservar Livro
+            </Button>
           </div>
+
+          <button
+            className={`md:hidden ${lightText ? "text-white" : "text-foreground"}`}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Menu"
+          >
+            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
-      )}
-    </header>
+
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+              animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+              exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+              transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+              className={`md:hidden mt-6 pb-4 -mx-6 px-6 rounded-b-xl ${isDark || !isScrolled ? "bg-foreground" : "bg-card"}`}
+            >
+              {navItems.map((item) => (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  className={`block py-3 text-[11px] uppercase tracking-wider font-normal smooth-hover hover:opacity-60 ${
+                    isDark || !isScrolled ? "text-white" : "text-foreground"
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <Button
+                variant="outline"
+                className={`w-full mt-4 rounded-full text-[11px] uppercase tracking-wider font-normal backdrop-blur-md border border-white/30 shadow-[0_4px_30px_rgba(0,0,0,0.1)] px-5 ${
+                  isDark || !isScrolled
+                    ? "bg-white/10 text-white hover:bg-primary/80 hover:text-white hover:border-primary/80"
+                    : "bg-white/20 text-foreground hover:bg-primary/80 hover:text-white hover:border-primary/80"
+                }`}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  handleReserve();
+                }}
+              >
+                Reservar Livro
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.nav>
   );
 };
 
