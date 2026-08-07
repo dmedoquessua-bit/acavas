@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { BookOpen } from "lucide-react";
 import brandIcon from "@/assets/worscoi-icon.png";
 
 const Footer = () => (
