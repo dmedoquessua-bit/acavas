@@ -282,7 +282,10 @@ const Admin = () => {
                   
                   {filteredBookings.length === 0 && (
                     <div className="text-center py-12">
-                      <p className="text-sm text-muted-foreground font-light">No bookings found for this location</p>
+                      <p className="text-sm text-muted-foreground font-light">
+                        {bookingsLoading ? "Loading bookings..." : "No bookings found for this location"}
+                      </p>
+
                     </div>
                   )}
                 </Card>
