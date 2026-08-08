@@ -100,6 +100,149 @@ export type Database = {
           },
         ]
       }
+      content_episodes: {
+        Row: {
+          body: string
+          content_id: string
+          created_at: string
+          id: string
+          images: string[]
+          is_free: boolean
+          number: number
+          published_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          content_id: string
+          created_at?: string
+          id?: string
+          images?: string[]
+          is_free?: boolean
+          number?: number
+          published_at?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          content_id?: string
+          created_at?: string
+          id?: string
+          images?: string[]
+          is_free?: boolean
+          number?: number
+          published_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_episodes_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contents: {
+        Row: {
+          author: string
+          body: string
+          category: string
+          collection: string | null
+          cover: string | null
+          created_at: string
+          currency: string
+          description: string
+          embedding: string | null
+          embedding_model: string | null
+          episode_count: number
+          featured: boolean
+          formats: string[]
+          id: string
+          language: string
+          price_cents: number
+          published: boolean
+          rating: number
+          rating_count: number
+          read_time: number | null
+          size: string | null
+          slug: string | null
+          subtitle: string | null
+          tags: string[]
+          title: string
+          type: Database["public"]["Enums"]["content_type"]
+          updated_at: string
+          views: number
+          year: number | null
+        }
+        Insert: {
+          author?: string
+          body?: string
+          category?: string
+          collection?: string | null
+          cover?: string | null
+          created_at?: string
+          currency?: string
+          description?: string
+          embedding?: string | null
+          embedding_model?: string | null
+          episode_count?: number
+          featured?: boolean
+          formats?: string[]
+          id?: string
+          language?: string
+          price_cents?: number
+          published?: boolean
+          rating?: number
+          rating_count?: number
+          read_time?: number | null
+          size?: string | null
+          slug?: string | null
+          subtitle?: string | null
+          tags?: string[]
+          title: string
+          type?: Database["public"]["Enums"]["content_type"]
+          updated_at?: string
+          views?: number
+          year?: number | null
+        }
+        Update: {
+          author?: string
+          body?: string
+          category?: string
+          collection?: string | null
+          cover?: string | null
+          created_at?: string
+          currency?: string
+          description?: string
+          embedding?: string | null
+          embedding_model?: string | null
+          episode_count?: number
+          featured?: boolean
+          formats?: string[]
+          id?: string
+          language?: string
+          price_cents?: number
+          published?: boolean
+          rating?: number
+          rating_count?: number
+          read_time?: number | null
+          size?: string | null
+          slug?: string | null
+          subtitle?: string | null
+          tags?: string[]
+          title?: string
+          type?: Database["public"]["Enums"]["content_type"]
+          updated_at?: string
+          views?: number
+          year?: number | null
+        }
+        Relationships: []
+      }
       news: {
         Row: {
           category: string
@@ -210,6 +353,89 @@ export type Database = {
           },
         ]
       }
+      user_interactions: {
+        Row: {
+          action: string
+          content_id: string
+          created_at: string
+          id: string
+          progress: number
+          user_id: string
+        }
+        Insert: {
+          action?: string
+          content_id: string
+          created_at?: string
+          id?: string
+          progress?: number
+          user_id: string
+        }
+        Update: {
+          action?: string
+          content_id?: string
+          created_at?: string
+          id?: string
+          progress?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_interactions_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_progress: {
+        Row: {
+          content_id: string
+          created_at: string
+          episode_id: string | null
+          id: string
+          last_read_at: string
+          progress_percentage: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content_id: string
+          created_at?: string
+          episode_id?: string | null
+          id?: string
+          last_read_at?: string
+          progress_percentage?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content_id?: string
+          created_at?: string
+          episode_id?: string | null
+          id?: string
+          last_read_at?: string
+          progress_percentage?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_progress_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_progress_episode_id_fkey"
+            columns: ["episode_id"]
+            isOneToOne: false
+            referencedRelation: "content_episodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -243,13 +469,30 @@ export type Database = {
         }
         Returns: boolean
       }
+      match_contents: {
+        Args: {
+          exclude_ids?: string[]
+          filter_type?: Database["public"]["Enums"]["content_type"]
+          match_count?: number
+          query_embedding: string
+        }
+        Returns: {
+          id: string
+          similarity: number
+        }[]
+      }
       owns_book: {
         Args: { _book_id: string; _user_id: string }
         Returns: boolean
       }
+      user_taste_embedding: {
+        Args: { _history?: number; _user_id: string }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "user"
+      content_type: "book" | "webtoon" | "news" | "academic"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -378,6 +621,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      content_type: ["book", "webtoon", "news", "academic"],
     },
   },
 } as const
