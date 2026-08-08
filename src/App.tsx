@@ -14,6 +14,12 @@ import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
+import ContentDetail from "./pages/ContentDetail";
+import ContentReader from "./pages/ContentReader";
+import WebtoonDetail from "./pages/WebtoonDetail";
+import Webtoons from "./pages/Webtoons";
+import ForYou from "./pages/ForYou";
+import ContinueReading from "./pages/ContinueReading";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +40,13 @@ const App = () => (
           <Route path="/biblioteca" element={<Library />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/conteudo/:id" element={<ContentDetail />} />
+          <Route path="/leitura/:id" element={<ContentReader />} />
+          <Route path="/webtoons" element={<Webtoons />} />
+          <Route path="/webtoon/:id" element={<WebtoonDetail />} />
+          <Route path="/webtoon/:id/ep/:episodeId" element={<ContentReader />} />
+          <Route path="/para-voce" element={<ForYou />} />
+          <Route path="/continuar-lendo" element={<ContinueReading />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
