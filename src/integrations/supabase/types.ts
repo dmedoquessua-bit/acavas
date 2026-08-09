@@ -147,6 +147,56 @@ export type Database = {
           },
         ]
       }
+      content_purchases: {
+        Row: {
+          amount_cents: number
+          checkout_session_id: string | null
+          content_id: string
+          created_at: string
+          currency: string
+          id: string
+          provider: string
+          provider_reference: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents?: number
+          checkout_session_id?: string | null
+          content_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          provider?: string
+          provider_reference?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          checkout_session_id?: string | null
+          content_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          provider?: string
+          provider_reference?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_purchases_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contents: {
         Row: {
           author: string
@@ -457,6 +507,35 @@ export type Database = {
         }
         Relationships: []
       }
+      user_saved: {
+        Row: {
+          content_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          content_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          content_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_saved_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "contents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -483,6 +562,10 @@ export type Database = {
       }
       owns_book: {
         Args: { _book_id: string; _user_id: string }
+        Returns: boolean
+      }
+      owns_content: {
+        Args: { _content_id: string; _user_id: string }
         Returns: boolean
       }
       user_taste_embedding: {
