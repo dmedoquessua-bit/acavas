@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.owns_content(uuid, uuid) FROM PUBLIC, anon, authenticated;
