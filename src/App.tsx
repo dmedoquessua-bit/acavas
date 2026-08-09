@@ -50,6 +50,9 @@ const App = () => (
           <Route path="/webtoon/:id/ep/:episodeId" element={<ContentReader />} />
           <Route path="/para-voce" element={<ForYou />} />
           <Route path="/continuar-lendo" element={<ContinueReading />} />
+          <Route path="/buscar" element={<Search />} />
+          <Route path="/compra/sucesso" element={<PurchaseSuccess />} />
+          <Route path="/compra/cancelada" element={<PurchaseCancelled />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
