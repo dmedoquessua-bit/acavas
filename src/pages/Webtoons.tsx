@@ -1,25 +1,30 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { ContentList } from "@/components/ContentSection";
-import { Button } from "@/components/ui/button";
+import ContentFiltersBar, { useUrlFilters } from "@/components/ContentFilters";
+import InfiniteContentList from "@/components/InfiniteContentList";
 import bannerImage from "@/assets/hero-reading.jpg";
+import { useContentFeed } from "@/hooks/useContentFeed";
 import { useContents } from "@/hooks/useContents";
 
 const Webtoons = () => {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 500], [0, 150]);
-  const { data: items = [], isLoading } = useContents({ type: "webtoon" });
-  const [tag, setTag] = useState("todas");
+  const { filters } = useUrlFilters();
+  const feed = useContentFeed({ ...filters, type: "webtoon" });
+  const items = useMemo(() => feed.data?.pages.flatMap((p) => p.items) ?? [], [feed.data]);
 
-  const tags = useMemo(
-    () => ["todas", ...Array.from(new Set(items.flatMap((i) => i.tags)))],
-    [items],
-  );
-  const visible = useMemo(
-    () => (tag === "todas" ? items : items.filter((i) => i.tags.includes(tag))),
-    [items, tag],
+  const { data: all = [] } = useContents({ type: "webtoon" });
+  const options = useMemo(
+    () => ({
+      categories: Array.from(new Set(all.map((i) => i.category))).sort(),
+      tags: Array.from(new Set(all.flatMap((i) => i.tags))).sort(),
+      languages: Array.from(new Set(all.map((i) => i.language))).sort(),
+      formats: [],
+      years: Array.from(new Set(all.map((i) => i.year).filter(Boolean) as number[])).sort((a, b) => b - a),
+    }),
+    [all],
   );
 
   return (
@@ -43,27 +48,16 @@ const Webtoons = () => {
 
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-6 lg:px-12">
-          <div className="flex flex-wrap gap-2 justify-center mb-12">
-            {tags.map((t) => (
-              <Button
-                key={t}
-                variant={tag === t ? "default" : "outline"}
-                size="sm"
-                className="rounded-full text-[11px] uppercase tracking-wider font-normal px-5"
-                onClick={() => setTag(t)}
-              >
-                {t}
-              </Button>
-            ))}
-          </div>
+          <ContentFiltersBar options={options} />
 
-          {isLoading ? (
-            <p className="text-center text-sm text-muted-foreground font-light">Carregando…</p>
-          ) : visible.length === 0 ? (
-            <p className="text-center text-sm text-muted-foreground font-light">Nenhum webtoon publicado ainda.</p>
-          ) : (
-            <ContentList items={visible} />
-          )}
+          <InfiniteContentList
+            items={items}
+            isLoading={feed.isLoading}
+            isFetchingNextPage={feed.isFetchingNextPage}
+            hasNextPage={feed.hasNextPage}
+            fetchNextPage={feed.fetchNextPage}
+            emptyLabel="Nenhum webtoon encontrado com esses filtros."
+          />
         </div>
       </section>
 

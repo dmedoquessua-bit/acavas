@@ -80,8 +80,10 @@ export const contentToBook = (item: Content): Book => ({
   created_at: item.created_at,
 });
 
-const SELECT =
+export const CONTENT_SELECT =
   "id,type,title,subtitle,description,author,tags,category,slug,cover,rating,rating_count,formats,language,year,size,views,read_time,episode_count,price_cents,currency,published,featured,collection,created_at";
+
+const SELECT = CONTENT_SELECT;
 
 export const useContents = (options?: { type?: ContentType; category?: string; limit?: number }) =>
   useQuery({

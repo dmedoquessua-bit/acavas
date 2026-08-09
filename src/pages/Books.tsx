@@ -1,36 +1,48 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import BookCard from "@/components/BookCard";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowUpDown } from "lucide-react";
+import ContentFiltersBar, { useUrlFilters } from "@/components/ContentFilters";
+import InfiniteContentList from "@/components/InfiniteContentList";
+import { Button } from "@/components/ui/button";
 import bannerImage from "@/assets/hero-library.jpg";
-import { useBooks } from "@/hooks/useCatalog";
+import { useContentFeed } from "@/hooks/useContentFeed";
+import { useContents, ContentType } from "@/hooks/useContents";
 
-type SortOption = "recent" | "price-low" | "price-high";
+const TABS: Array<{ value: ContentType; label: string }> = [
+  { value: "book", label: "Livros" },
+  { value: "academic", label: "Acadêmicos" },
+];
 
 const Books = () => {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 500], [0, 150]);
-  const [sortBy, setSortBy] = useState<SortOption>("recent");
-  const [category, setCategory] = useState("todas");
-  const { data: books = [], isLoading } = useBooks();
+  const [params, setParams] = useSearchParams();
+  const type = (params.get("tipo") as ContentType) ?? "book";
+  const { filters } = useUrlFilters();
 
-  const published = useMemo(() => books.filter((b) => b.published), [books]);
-  const categories = useMemo(() => ["todas", ...Array.from(new Set(published.map((b) => b.category)))], [published]);
+  const feed = useContentFeed({ ...filters, type });
+  const items = useMemo(() => feed.data?.pages.flatMap((p) => p.items) ?? [], [feed.data]);
 
-  const visible = useMemo(() => {
-    const list = published.filter((b) => category === "todas" || b.category === category);
-    switch (sortBy) {
-      case "price-low":
-        return [...list].sort((a, b) => a.price_cents - b.price_cents);
-      case "price-high":
-        return [...list].sort((a, b) => b.price_cents - a.price_cents);
-      default:
-        return list;
-    }
-  }, [published, category, sortBy]);
+  const { data: all = [] } = useContents({ type });
+  const options = useMemo(
+    () => ({
+      categories: Array.from(new Set(all.map((i) => i.category))).sort(),
+      tags: Array.from(new Set(all.flatMap((i) => i.tags))).sort(),
+      languages: Array.from(new Set(all.map((i) => i.language))).sort(),
+      formats: Array.from(new Set(all.flatMap((i) => i.formats))).sort(),
+      years: Array.from(new Set(all.map((i) => i.year).filter(Boolean) as number[])).sort((a, b) => b - a),
+    }),
+    [all],
+  );
+
+  const setType = (value: ContentType) => {
+    const next = new URLSearchParams(params);
+    if (value === "book") next.delete("tipo");
+    else next.set("tipo", value);
+    setParams(next, { replace: true });
+  };
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -58,59 +70,38 @@ const Books = () => {
         >
           <div className="text-center mb-12">
             <span className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4 block">Catálogo</span>
-            <h1 className="text-2xl md:text-3xl font-light tracking-tight text-foreground mb-4">Todos os livros</h1>
+            <h1 className="text-2xl md:text-3xl font-light tracking-tight text-foreground mb-4">
+              {type === "academic" ? "Artigos acadêmicos" : "Todos os livros"}
+            </h1>
             <p className="text-sm text-muted-foreground font-light max-w-md mx-auto">
               Explore os títulos disponíveis para leitura online
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-between gap-4 mb-8">
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="w-[180px] text-sm font-light">
-                <SelectValue placeholder="Categoria" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c === "todas" ? "Todas as categorias" : c}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <div className="flex items-center gap-3">
-              <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
-              <Select value={sortBy} onValueChange={(value: SortOption) => setSortBy(value)}>
-                <SelectTrigger className="w-[180px] text-sm font-light">
-                  <SelectValue placeholder="Ordenar" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="recent">Mais recentes</SelectItem>
-                  <SelectItem value="price-low">Preço: menor primeiro</SelectItem>
-                  <SelectItem value="price-high">Preço: maior primeiro</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="flex justify-center gap-2 mb-8">
+            {TABS.map((t) => (
+              <Button
+                key={t.value}
+                variant={type === t.value ? "default" : "outline"}
+                size="sm"
+                className="rounded-full text-[11px] uppercase tracking-wider font-normal px-5"
+                onClick={() => setType(t.value)}
+              >
+                {t.label}
+              </Button>
+            ))}
           </div>
 
-          {isLoading ? (
-            <p className="text-sm text-muted-foreground font-light text-center py-16">Carregando livros...</p>
-          ) : visible.length === 0 ? (
-            <p className="text-sm text-muted-foreground font-light text-center py-16">Nenhum livro encontrado.</p>
-          ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {visible.map((book, index) => (
-                <motion.div
-                  key={book.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                >
-                  <BookCard book={book} />
-                </motion.div>
-              ))}
-            </div>
-          )}
+          <ContentFiltersBar options={options} />
+
+          <InfiniteContentList
+            items={items}
+            isLoading={feed.isLoading}
+            isFetchingNextPage={feed.isFetchingNextPage}
+            hasNextPage={feed.hasNextPage}
+            fetchNextPage={feed.fetchNextPage}
+            emptyLabel="Nenhum título encontrado com esses filtros."
+          />
         </motion.div>
       </main>
 
