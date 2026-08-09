@@ -20,6 +20,9 @@ import WebtoonDetail from "./pages/WebtoonDetail";
 import Webtoons from "./pages/Webtoons";
 import ForYou from "./pages/ForYou";
 import ContinueReading from "./pages/ContinueReading";
+import Search from "./pages/Search";
+import PurchaseSuccess from "./pages/PurchaseSuccess";
+import PurchaseCancelled from "./pages/PurchaseCancelled";
 
 const queryClient = new QueryClient();
 
