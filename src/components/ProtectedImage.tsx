@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useState } from "react";
 
 interface ProtectedImageProps {
   src?: string | null;
@@ -10,24 +10,18 @@ interface ProtectedImageProps {
 
 const FALLBACK = "/placeholder.svg";
 
-/** Derives a .webp sibling for local/uploaded assets so <picture> can prefer it. */
+/** Only local assets get a .webp sibling — remote URLs are used as-is. */
 const webpFor = (src: string) =>
-  /\.(jpe?g|png)$/i.test(src) ? src.replace(/\.(jpe?g|png)$/i, ".webp") : null;
+  !/^https?:/i.test(src) && /\.(jpe?g|png)$/i.test(src) ? src.replace(/\.(jpe?g|png)$/i, ".webp") : null;
 
 /**
  * Image with WebP preference, lazy decoding, broken-image fallback and
  * light anti-scraping protection (no drag, no selection, no context menu).
  */
 const ProtectedImage = ({ src, alt, className, priority }: ProtectedImageProps) => {
-  const source = src || FALLBACK;
-  const webp = webpFor(source);
-
-  const handleError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
-    const img = e.currentTarget;
-    if (img.src.endsWith(FALLBACK)) return;
-    img.src = FALLBACK;
-    img.classList.add("object-contain", "p-6", "opacity-60");
-  }, []);
+  const [failed, setFailed] = useState(false);
+  const source = !failed && src ? src : FALLBACK;
+  const webp = failed ? null : webpFor(source);
 
   return (
     <picture onContextMenu={(e) => e.preventDefault()}>
@@ -40,8 +34,10 @@ const ProtectedImage = ({ src, alt, className, priority }: ProtectedImageProps) 
         draggable={false}
         onDragStart={(e) => e.preventDefault()}
         onContextMenu={(e) => e.preventDefault()}
-        onError={handleError}
-        className={`select-none [-webkit-user-drag:none] ${className ?? ""}`}
+        onError={() => setFailed(true)}
+        className={`select-none [-webkit-user-drag:none] ${className ?? ""} ${
+          failed ? "object-contain p-8 opacity-40" : ""
+        }`}
       />
     </picture>
   );
