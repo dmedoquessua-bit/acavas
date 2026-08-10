@@ -39,6 +39,7 @@ const Navigation = ({ variant = "default" }: NavigationProps) => {
 
   const navItems = [
     { label: "Livros", href: "/livros" },
+    { label: "Webtoons", href: "/webtoons" },
     { label: "Notícias", href: "/noticias" },
     { label: user ? "Minha estante" : "Entrar", href: user ? "/biblioteca" : "/auth" },
     ...(isAdmin ? [{ label: "Admin", href: "/admin" }] : []),
