@@ -23,6 +23,11 @@ import ContinueReading from "./pages/ContinueReading";
 import Search from "./pages/Search";
 import PurchaseSuccess from "./pages/PurchaseSuccess";
 import PurchaseCancelled from "./pages/PurchaseCancelled";
+import ResetPassword from "./pages/ResetPassword";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import CookieConsent from "./components/consent/CookieConsent";
+import TermsGate from "./components/consent/TermsGate";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +38,10 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <CookieConsent />
+        <TermsGate />
         <Routes>
+
           <Route path="/" element={<Index />} />
           <Route path="/livros" element={<Books />} />
           <Route path="/livros/:id" element={<BookDetail />} />
@@ -53,6 +61,10 @@ const App = () => (
           <Route path="/buscar" element={<Search />} />
           <Route path="/compra/sucesso" element={<PurchaseSuccess />} />
           <Route path="/compra/cancelada" element={<PurchaseCancelled />} />
+          <Route path="/redefinir-senha" element={<ResetPassword />} />
+          <Route path="/termos" element={<Terms />} />
+          <Route path="/privacidade" element={<Privacy />} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

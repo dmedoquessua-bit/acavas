@@ -46,10 +46,21 @@ const Footer = () => {
                 </a>
               </li>
               <li>
+                <Link to="/termos" className="text-background/70 hover:text-background smooth-hover text-xs font-light">
+                  Termos de Uso
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacidade" className="text-background/70 hover:text-background smooth-hover text-xs font-light">
+                  Privacidade
+                </Link>
+              </li>
+              <li>
                 <Link to="/admin" className="text-background/70 hover:text-background smooth-hover text-xs font-light">
                   Painel Admin
                 </Link>
               </li>
+
             </ul>
           </div>
 
