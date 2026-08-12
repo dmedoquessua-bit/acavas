@@ -13,7 +13,7 @@ const TermsGate = () => {
 
   return (
     <Dialog open={needsAcceptance}>
-      <DialogContent className="max-w-md rounded-xl" hideClose>
+      <DialogContent className="max-w-md rounded-xl [&>button]:hidden">
         <DialogHeader>
           <DialogTitle className="text-lg font-normal">Termos e privacidade</DialogTitle>
           <DialogDescription className="text-xs font-light leading-relaxed">
