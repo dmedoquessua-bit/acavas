@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          entity: string | null
+          entity_id: string | null
+          id: string
+          ip_address: string | null
+          metadata: Json
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          entity?: string | null
+          entity_id?: string | null
+          id?: string
+          ip_address?: string | null
+          metadata?: Json
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity?: string | null
+          entity_id?: string | null
+          id?: string
+          ip_address?: string | null
+          metadata?: Json
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      auth_rate_limits: {
+        Row: {
+          action: string
+          attempts: number
+          blocked_until: string | null
+          created_at: string
+          id: string
+          identifier: string
+          updated_at: string
+          window_start: string
+        }
+        Insert: {
+          action?: string
+          attempts?: number
+          blocked_until?: string | null
+          created_at?: string
+          id?: string
+          identifier: string
+          updated_at?: string
+          window_start?: string
+        }
+        Update: {
+          action?: string
+          attempts?: number
+          blocked_until?: string | null
+          created_at?: string
+          id?: string
+          identifier?: string
+          updated_at?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       books: {
         Row: {
           author: string
@@ -21,6 +90,7 @@ export type Database = {
           cover_url: string | null
           created_at: string
           currency: string
+          deleted_at: string | null
           description: string
           featured: boolean
           id: string
@@ -35,6 +105,7 @@ export type Database = {
           cover_url?: string | null
           created_at?: string
           currency?: string
+          deleted_at?: string | null
           description?: string
           featured?: boolean
           id?: string
@@ -49,6 +120,7 @@ export type Database = {
           cover_url?: string | null
           created_at?: string
           currency?: string
+          deleted_at?: string | null
           description?: string
           featured?: boolean
           id?: string
@@ -64,6 +136,7 @@ export type Database = {
           book_id: string
           content: string
           created_at: string
+          deleted_at: string | null
           id: string
           is_free_preview: boolean
           position: number
@@ -74,6 +147,7 @@ export type Database = {
           book_id: string
           content?: string
           created_at?: string
+          deleted_at?: string | null
           id?: string
           is_free_preview?: boolean
           position?: number
@@ -84,6 +158,7 @@ export type Database = {
           book_id?: string
           content?: string
           created_at?: string
+          deleted_at?: string | null
           id?: string
           is_free_preview?: boolean
           position?: number
@@ -105,6 +180,7 @@ export type Database = {
           body: string
           content_id: string
           created_at: string
+          deleted_at: string | null
           id: string
           images: string[]
           is_free: boolean
@@ -117,6 +193,7 @@ export type Database = {
           body?: string
           content_id: string
           created_at?: string
+          deleted_at?: string | null
           id?: string
           images?: string[]
           is_free?: boolean
@@ -129,6 +206,7 @@ export type Database = {
           body?: string
           content_id?: string
           created_at?: string
+          deleted_at?: string | null
           id?: string
           images?: string[]
           is_free?: boolean
@@ -154,6 +232,7 @@ export type Database = {
           content_id: string
           created_at: string
           currency: string
+          deleted_at: string | null
           id: string
           provider: string
           provider_reference: string | null
@@ -167,6 +246,7 @@ export type Database = {
           content_id: string
           created_at?: string
           currency?: string
+          deleted_at?: string | null
           id?: string
           provider?: string
           provider_reference?: string | null
@@ -180,6 +260,7 @@ export type Database = {
           content_id?: string
           created_at?: string
           currency?: string
+          deleted_at?: string | null
           id?: string
           provider?: string
           provider_reference?: string | null
@@ -206,6 +287,7 @@ export type Database = {
           cover: string | null
           created_at: string
           currency: string
+          deleted_at: string | null
           description: string
           embedding: string | null
           embedding_model: string | null
@@ -237,6 +319,7 @@ export type Database = {
           cover?: string | null
           created_at?: string
           currency?: string
+          deleted_at?: string | null
           description?: string
           embedding?: string | null
           embedding_model?: string | null
@@ -268,6 +351,7 @@ export type Database = {
           cover?: string | null
           created_at?: string
           currency?: string
+          deleted_at?: string | null
           description?: string
           embedding?: string | null
           embedding_model?: string | null
@@ -299,6 +383,7 @@ export type Database = {
           content: string
           cover_url: string | null
           created_at: string
+          deleted_at: string | null
           excerpt: string
           id: string
           published: boolean
@@ -312,6 +397,7 @@ export type Database = {
           content?: string
           cover_url?: string | null
           created_at?: string
+          deleted_at?: string | null
           excerpt?: string
           id?: string
           published?: boolean
@@ -325,6 +411,7 @@ export type Database = {
           content?: string
           cover_url?: string | null
           created_at?: string
+          deleted_at?: string | null
           excerpt?: string
           id?: string
           published?: boolean
@@ -338,6 +425,7 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          deleted_at: string | null
           display_name: string | null
           id: string
           updated_at: string
@@ -345,6 +433,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          deleted_at?: string | null
           display_name?: string | null
           id?: string
           updated_at?: string
@@ -352,6 +441,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          deleted_at?: string | null
           display_name?: string | null
           id?: string
           updated_at?: string
@@ -365,6 +455,7 @@ export type Database = {
           book_id: string
           created_at: string
           currency: string
+          deleted_at: string | null
           id: string
           provider_reference: string | null
           status: string
@@ -376,6 +467,7 @@ export type Database = {
           book_id: string
           created_at?: string
           currency?: string
+          deleted_at?: string | null
           id?: string
           provider_reference?: string | null
           status?: string
@@ -387,6 +479,7 @@ export type Database = {
           book_id?: string
           created_at?: string
           currency?: string
+          deleted_at?: string | null
           id?: string
           provider_reference?: string | null
           status?: string
@@ -402,6 +495,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_consents: {
+        Row: {
+          accepted_at: string | null
+          cookie_preferences: Json
+          created_at: string
+          deleted_at: string | null
+          email: string | null
+          id: string
+          ip_address: string | null
+          privacy_accepted: boolean
+          terms_accepted: boolean
+          terms_version: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          cookie_preferences?: Json
+          created_at?: string
+          deleted_at?: string | null
+          email?: string | null
+          id?: string
+          ip_address?: string | null
+          privacy_accepted?: boolean
+          terms_accepted?: boolean
+          terms_version?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          cookie_preferences?: Json
+          created_at?: string
+          deleted_at?: string | null
+          email?: string | null
+          id?: string
+          ip_address?: string | null
+          privacy_accepted?: boolean
+          terms_accepted?: boolean
+          terms_version?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_interactions: {
         Row: {
@@ -442,6 +580,7 @@ export type Database = {
         Row: {
           content_id: string
           created_at: string
+          deleted_at: string | null
           episode_id: string | null
           id: string
           last_read_at: string
@@ -452,6 +591,7 @@ export type Database = {
         Insert: {
           content_id: string
           created_at?: string
+          deleted_at?: string | null
           episode_id?: string | null
           id?: string
           last_read_at?: string
@@ -462,6 +602,7 @@ export type Database = {
         Update: {
           content_id?: string
           created_at?: string
+          deleted_at?: string | null
           episode_id?: string | null
           id?: string
           last_read_at?: string
@@ -511,18 +652,21 @@ export type Database = {
         Row: {
           content_id: string
           created_at: string
+          deleted_at: string | null
           id: string
           user_id: string
         }
         Insert: {
           content_id: string
           created_at?: string
+          deleted_at?: string | null
           id?: string
           user_id: string
         }
         Update: {
           content_id?: string
           created_at?: string
+          deleted_at?: string | null
           id?: string
           user_id?: string
         }
