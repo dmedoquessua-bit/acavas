@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1793740955490,
+      "tag": "0000_add_manga_type",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793740968437,
+      "tag": "0001_seed_manga",
+      "breakpoints": true
+    }
+  ]
+}
